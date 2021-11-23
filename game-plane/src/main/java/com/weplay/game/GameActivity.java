@@ -3,8 +3,9 @@ package com.weplay.game;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.weplay.game.widget.GameView;
 import com.weplay.WePlay;
+import com.weplay.game.widget.GameView;
+import com.weplay.message.WePlayUser;
 
 
 public class GameActivity extends Activity {
@@ -13,12 +14,25 @@ public class GameActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("onCreate");
         gameView = new GameView(this);
         setContentView(gameView);
         //WePlay.sendScore(long score)
         gameView.setOnScoreCallback(WePlay::sendScore);
-        gameView.start();
+        WePlay.setOnAccountCallback(new WePlay.OnAccountCallback() {
+            @Override
+            public boolean onLogin(WePlayUser wePlayUser) {
+                gameView.setUserName(wePlayUser.userName + "@WePlay");
+                gameView.start();
+                return true;
+            }
+
+            @Override
+            public boolean onLogout() {
+                gameView.setUserName(null);
+                gameView.destroy();
+                return true;
+            }
+        });
     }
 
     @Override

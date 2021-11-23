@@ -8,10 +8,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
 
 import com.weplay.game.R;
 import com.weplay.game.util.SoundUtil;
@@ -122,6 +122,12 @@ public class GameView extends View {
         void onResult(long score);
     }
 
+    private String userName;
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public void start() {
         destroy();
         startWhenBitmapsReady();
@@ -163,12 +169,16 @@ public class GameView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         //我们在每一帧都检测是否满足延迟触发单击事件的条件
-        if (isSingleClick()) {
+        if (isSingleClick())
             onSingleClick(touchX, touchY);
-        }
 
         super.onDraw(canvas);
-
+        if (!TextUtils.isEmpty(userName)) {
+            Paint.Align align = textPaint.getTextAlign();
+            textPaint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(userName, canvas.getWidth() / 2, textPaint.getTextSize() + 60, textPaint);
+            textPaint.setTextAlign(align);
+        }
         if (status == STATUS_GAME_STARTED) {
             drawGameStarted(canvas);
         } else if (status == STATUS_GAME_PAUSED) {
@@ -182,7 +192,7 @@ public class GameView extends View {
     private void drawGameStarted(Canvas canvas) {
 
         //第一次绘制时，将战斗机移到Canvas最下方，在水平方向的中心
-        if (frame == 0) {
+        if (frame == 0 && combatAircraft != null) {
             float centerX = canvas.getWidth() / 2;
             float centerY = canvas.getHeight() - combatAircraft.getHeight() / 2;
             combatAircraft.centerTo(centerX, centerY);

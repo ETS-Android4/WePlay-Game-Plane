@@ -1,9 +1,3 @@
-#指定外部模糊字典
-#-obfuscationdictionary '/Users/sensyang/Library/Android/sdk/tools/proguard/dic-project.txt'
-#指定class模糊字典
--classobfuscationdictionary '/Users/sensyang/Library/Android/sdk/tools/proguard/dic-class.txt'
-#指定package模糊字典
-#-packageobfuscationdictionary '/Users/sensyang/Library/Android/sdk/tools/proguard/dic-package.txt'
 -repackageclasses
 ##-----------------混淆配置设定------------------------------------------------------------------------
 -optimizationpasses 10
@@ -33,5 +27,10 @@
     public static final android.os.Parcelable$Creator *;
 }
 ##############################  WePlay  ################################
--keep class com.weplay.WePlay{static <methods>;}
--keep class com.weplay.WePlayServer{<methods>;}
+-keep class com.weplay.WePlay{public static <methods>;}
+-keep public interface com.weplay.WePlay$*{*;}
+-keep class com.weplay.WePlayServer{public <methods>;}
+-keep class com.weplay.message.**{*;}
+## Gson
+-keep class com.google.gson.stream.** { *; }
+-keepattributes EnclosingMethod
