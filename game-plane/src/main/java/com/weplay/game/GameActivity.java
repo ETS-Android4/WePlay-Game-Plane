@@ -30,6 +30,7 @@ public class GameActivity extends Activity {
             public boolean onLogout() {
                 gameView.setUserName(null);
                 gameView.destroy();
+                gameView.postInvalidate();
                 return true;
             }
         });
