@@ -111,7 +111,7 @@ public class GameView extends View {
             bitmaps.add(bitmap);
         }
     }
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     private OnResultCallback onResultCallback;
 
     public void setOnScoreCallback(OnResultCallback onResultCallback) {
@@ -121,6 +121,17 @@ public class GameView extends View {
     public interface OnResultCallback {
         void onResult(long score);
     }
+
+    private OnGreatMomentCallback onGreatMomentCallback;
+
+    public void setOnGreatMomentCallback(OnGreatMomentCallback onGreatMomentCallback) {
+        this.onGreatMomentCallback = onGreatMomentCallback;
+    }
+
+    public interface OnGreatMomentCallback {
+        void onGreatMoment();
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     private String userName;
 

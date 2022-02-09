@@ -18,6 +18,8 @@ public class GameActivity extends Activity {
         setContentView(gameView);
         //WePlay.sendScore(long score)
         gameView.setOnScoreCallback(WePlay::sendScore);
+        gameView.setOnGreatMomentCallback(WePlay::greatMoment);
+        gameView.start();
         WePlay.setOnAccountCallback(new WePlay.OnAccountCallback() {
             @Override
             public boolean onLogin(WePlayUser wePlayUser) {
@@ -29,7 +31,7 @@ public class GameActivity extends Activity {
             @Override
             public boolean onLogout() {
                 gameView.setUserName(null);
-                gameView.destroy();
+                gameView.start();
                 gameView.postInvalidate();
                 return true;
             }
