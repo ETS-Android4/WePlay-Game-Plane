@@ -1,6 +1,6 @@
 # WePlay Game SDK
 
-see com.weplay.game.GameActivity from [DEMO](https://github.com/WePlayGaming/WePlay-Game-Plane)
+see [com.weplay.game.GameActivity](https://github.com/WePlayGaming/WePlay-Game-Plane/blob/master/game-plane/src/main/java/com/weplay/game/GameActivity.java) from [DEMO](https://github.com/WePlayGaming/WePlay-Game-Plane)
 
 https://github.com/WePlayGaming/WePlay-Game-Plane
 
