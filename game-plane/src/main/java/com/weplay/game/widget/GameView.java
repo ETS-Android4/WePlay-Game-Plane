@@ -111,6 +111,7 @@ public class GameView extends View {
             bitmaps.add(bitmap);
         }
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     private OnResultCallback onResultCallback;
 
@@ -122,14 +123,33 @@ public class GameView extends View {
         void onResult(long score);
     }
 
-    private OnGreatMomentCallback onGreatMomentCallback;
+    protected OnGreatMomentCallback greatMomentCallback;
 
-    public void setOnGreatMomentCallback(OnGreatMomentCallback onGreatMomentCallback) {
-        this.onGreatMomentCallback = onGreatMomentCallback;
+    public void setGreatMomentCallback(OnGreatMomentCallback callback) {
+        this.greatMomentCallback = callback;
     }
 
     public interface OnGreatMomentCallback {
         void onGreatMoment();
+    }
+
+    private OnShowAdCallback adCallback;
+
+    public void setAdCallback(OnShowAdCallback callback) {
+        this.adCallback = callback;
+    }
+
+    public interface OnShowAdCallback {
+        void showInterstitialAd();
+
+        void showRewardedVideoAd();
+    }
+
+    public void addBomb() {
+        if (combatAircraft == null)
+            combatAircraft = new CombatAircraft(bitmaps.get(0));
+        combatAircraft.plus();
+        resume();
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -161,6 +181,7 @@ public class GameView extends View {
         //将游戏设置为暂停状态
         status = STATUS_GAME_PAUSED;
         soundUtil.pause();
+        if (adCallback != null) adCallback.showInterstitialAd();
     }
 
     public void resume() {
@@ -256,8 +277,25 @@ public class GameView extends View {
             //通过调用postInvalidate()方法使得View持续渲染，实现动态效果
             postInvalidate();
         }
-
+        drawGetBomb(canvas);
         drawScoreAndBombs(canvas);
+    }
+
+    private RectF getBOMBRect = new RectF();
+
+    private void drawGetBomb(Canvas canvas) {
+        String text = "GET BOMB";
+        float canvasWidth = canvas.getWidth();
+        float textWidth = textPaint.measureText(text);
+        Paint.Align align = textPaint.getTextAlign();
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(text, canvasWidth / 2, fontSize2 * 2, textPaint);
+        textPaint.setTextAlign(align);
+        getBOMBRect.set(canvasWidth / 2 - textWidth / 2,
+                fontSize2 * 2 - fontSize2 / 2,
+                canvasWidth / 2 + textWidth / 2,
+                fontSize2 * 2 + fontSize2 / 2
+        );
     }
 
     //绘制暂停状态的游戏
@@ -575,11 +613,20 @@ public class GameView extends View {
         return singleClick;
     }
 
+    //是否单击了左上角的暂停按钮
+    private boolean isClickGetBomb(float x, float y) {
+        return getBOMBRect.contains(x, y);
+    }
+
     private void onSingleClick(float x, float y) {
         if (status == STATUS_GAME_STARTED) {
             if (isClickPause(x, y)) {
                 //单击了暂停按钮
                 pause();
+            } else if (isClickGetBomb(x, y)) {
+                //单击了获取炸弹按钮
+                pause();
+                if (adCallback != null) adCallback.showRewardedVideoAd();
             }
         } else if (status == STATUS_GAME_PAUSED) {
             if (isClickContinueButton(x, y)) {

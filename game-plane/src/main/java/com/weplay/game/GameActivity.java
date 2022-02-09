@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.weplay.WePlay;
+import com.weplay.ad.AdType;
 import com.weplay.game.widget.GameView;
 import com.weplay.message.WePlayUser;
 
 
 public class GameActivity extends Activity {
     private GameView gameView;
+    private String adId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +20,26 @@ public class GameActivity extends Activity {
         setContentView(gameView);
         //WePlay.sendScore(long score)
         gameView.setOnScoreCallback(WePlay::sendScore);
-        gameView.setOnGreatMomentCallback(WePlay::greatMoment);
+        gameView.setGreatMomentCallback(WePlay::greatMoment);
+        gameView.setAdCallback(new GameView.OnShowAdCallback() {
+            @Override
+            public void showInterstitialAd() {
+                WePlay.showAd(AdType.TYPE_INTERSTITIAL, null);
+            }
+
+            @Override
+            public void showRewardedVideoAd() {
+                adId = String.valueOf(System.currentTimeMillis());
+                WePlay.showAd(AdType.TYPE_REWARDED_VIDEO, adId);
+            }
+        });
+        WePlay.setOnAdCallback(adId -> {
+            if (adId.equals(GameActivity.this.adId)) {
+                GameActivity.this.adId = null;
+                //give the gift
+                gameView.addBomb();
+            }
+        });
         gameView.start();
         WePlay.setOnAccountCallback(new WePlay.OnAccountCallback() {
             @Override

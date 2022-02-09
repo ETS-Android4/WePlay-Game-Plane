@@ -30,6 +30,10 @@ public class CombatAircraft extends Sprite {
         super(bitmap);
     }
 
+    protected void plus() {
+        bombAwardCount++;
+    }
+
     @Override
     protected void beforeDraw(Canvas canvas, Paint paint, GameView gameView) {
         if (!isDestroyed()) {
@@ -200,6 +204,8 @@ public class CombatAircraft extends Sprite {
             }
             bombAwardCount--;
         }
+        if (gameView.greatMomentCallback != null)
+            gameView.greatMomentCallback.onGreatMoment();
     }
 
     public boolean isCollide() {
